@@ -1,0 +1,19 @@
+# Environment files
+.env
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Docker / local data
+*.log
+tmp/
+data/
+
+# macOS
+.DS_Store
+
+# VS Code
+.vscode/
