@@ -1,14 +1,13 @@
-from fastapi import FastAPI
 from datetime import datetime, timezone
 
-app = FastAPI(
-    title="SRE Production Platform API",
-    description="Core API service for the SRE Production Platform.",
-    version="0.1.0",
-)
+from fastapi import APIRouter
+
+from app.health import readiness_check
+
+router = APIRouter()
 
 
-@app.get("/")
+@router.get("/")
 def root():
     return {
         "service": "api-service",
@@ -17,7 +16,7 @@ def root():
     }
 
 
-@app.get("/health")
+@router.get("/health")
 def health():
     return {
         "status": "healthy",
@@ -25,15 +24,13 @@ def health():
     }
 
 
-@app.get("/live")
+@router.get("/live")
 def live():
     return {
         "status": "alive",
     }
 
 
-@app.get("/ready")
+@router.get("/ready")
 def ready():
-    return {
-        "status": "ready",
-    }
+    return readiness_check()
