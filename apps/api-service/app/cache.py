@@ -2,12 +2,14 @@ import redis
 
 from app.config import settings
 
-
-redis_client = redis.Redis(
+pool = redis.ConnectionPool(
     host=settings.REDIS_HOST,
     port=settings.REDIS_PORT,
-    socket_connect_timeout=3,
+    max_connections=10,
+    decode_responses=True,
 )
+
+redis_client = redis.Redis(connection_pool=pool)
 
 
 def check_redis():
