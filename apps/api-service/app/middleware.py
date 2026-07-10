@@ -3,6 +3,8 @@ import time
 
 from starlette.middleware.base import BaseHTTPMiddleware
 
+from app.metrics import REQUEST_COUNT
+
 logger = logging.getLogger("sre-platform")
 
 
@@ -13,6 +15,12 @@ class RequestLoggingMiddleware(BaseHTTPMiddleware):
         response = await call_next(request)
 
         duration = (time.time() - start_time) * 1000
+
+        REQUEST_COUNT.labels(
+            method=request.method,
+            endpoint=request.url.path,
+            status=response.status_code,
+        ).inc()
 
         logger.info(
             "%s %s %s %.2fms",

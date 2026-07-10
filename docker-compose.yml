@@ -59,5 +59,68 @@ services:
       timeout: 5s
       retries: 5
 
+  prometheus:
+    image: prom/prometheus:v3.5.0
+    container_name: sre-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./platform/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    depends_on:
+      - api-service
+
+  grafana:
+    image: grafana/grafana:12.1.0
+    container_name: sre-grafana
+
+    ports:
+      - "3000:3000"
+
+    depends_on:
+      - prometheus
+
+  node-exporter:
+    image: prom/node-exporter:v1.9.1
+    container_name: sre-node-exporter
+
+    ports:
+      - "9100:9100"
+
+    restart: unless-stopped
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.52.1
+    container_name: sre-cadvisor
+
+    ports:
+      - "8080:8080"
+
+    privileged: true
+
+    devices:
+      - /dev/kmsg
+
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker:/var/lib/docker:ro
+
+    restart: unless-stopped
+
+  postgres-exporter:
+    image: quay.io/prometheuscommunity/postgres-exporter:v0.20.1
+    container_name: sre-postgres-exporter
+    environment:
+      DATA_SOURCE_URI: "postgres:5432/sre_platform?sslmode=disable"
+      DATA_SOURCE_USER: "sre_admin"
+      DATA_SOURCE_PASS: "sre_password"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "9187:9187"
+    restart: unless-stopped
+
 volumes:
   postgres_data:
