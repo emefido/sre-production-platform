@@ -18,6 +18,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      tempo:
+        condition: service_started
     healthcheck:
       test:
         [
@@ -173,6 +175,17 @@ services:
     volumes:
       - ./platform/loki/config.yml:/etc/loki/config.yml:ro
 
+    restart: unless-stopped
+
+  tempo:
+    image: grafana/tempo:2.8.1
+    container_name: sre-tempo
+    command: -config.file=/etc/tempo/tempo.yaml
+    volumes:
+      - ./platform/tempo/tempo.yaml:/etc/tempo/tempo.yaml:ro
+    ports:
+      - "3200:3200"
+      - "4318:4318"
     restart: unless-stopped
 
   promtail:
