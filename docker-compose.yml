@@ -66,6 +66,8 @@ services:
       - "9090:9090"
     volumes:
       - ./platform/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./platform/prometheus/recording_rules.yml:/etc/prometheus/recording_rules.yml:ro
+      - ./platform/prometheus/alerts.yml:/etc/prometheus/alerts.yml:ro
     depends_on:
       - api-service
 
@@ -124,3 +126,4 @@ services:
 
 volumes:
   postgres_data:
+  volumes:

@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from fastapi.responses import Response
 from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
 
@@ -37,6 +37,12 @@ def live():
 def ready():
     return readiness_check()
 
+@router.get("/test-error")
+def test_error():
+    raise HTTPException(
+        status_code=500,
+        detail="Intentional test error for observability",
+    )
 
 @router.get("/metrics")
 def metrics():

@@ -1,0 +1,14 @@
+groups:
+  - name: sre-api-recording-rules
+    interval: 30s
+
+    rules:
+      - record: api:error_budget_burn_rate
+        expr: |
+          (
+            sum(rate(http_requests_total{status=~"5.."}[5m]))
+            /
+            sum(rate(http_requests_total[5m]))
+          )
+          /
+          0.001
