@@ -71,6 +71,24 @@ services:
     depends_on:
       - api-service
 
+  alertmanager:
+    image: prom/alertmanager:v0.28.1
+    container_name: sre-alertmanager
+
+    ports:
+      - "9093:9093"
+
+    volumes:
+      - ./platform/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+
+    command:
+      - "--config.file=/etc/alertmanager/alertmanager.yml"
+
+    restart: unless-stopped
+
+    depends_on:
+      - prometheus
+
   grafana:
     image: grafana/grafana:12.1.0
     container_name: sre-grafana
