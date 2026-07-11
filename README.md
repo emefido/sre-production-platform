@@ -1,50 +1,154 @@
-# SRE Production Platform
+# Production-Grade SRE Observability Platform
 
-A production-style Site Reliability Engineering and Platform Engineering project built from scratch.
+> A production-style Site Reliability Engineering portfolio demonstrating monitoring, observability, reliability engineering, distributed tracing, synthetic monitoring, and CI/CD.
 
-## Purpose
+![Platform](docs/architecture.png)
 
-This repository demonstrates how to design, build, monitor, operate, and improve a production-like platform using modern SRE practices.
+---
 
-## Planned Components
+## Executive Summary
 
-- Docker Compose
-- Nginx
-- FastAPI
-- PostgreSQL
-- Redis
-- Prometheus
-- Grafana
-- Alertmanager
-- Loki
-- OpenTelemetry
-- GitHub Actions
-- Health checks
-- Backups
-- Incident simulation
-- Auto-remediation
-- Runbooks and architecture documentation
+This repository demonstrates how to design, build, monitor, operate, and troubleshoot a production-style application platform from scratch.
 
-## Architecture Philosophy
+The focus is operational excellence rather than infrastructure provisioning. Every component was added incrementally and validated to build a complete observability platform suitable for demonstrating Senior Site Reliability Engineering skills.
 
-This platform starts with the application before adding observability tools such as Prometheus, Grafana, Loki, and Alertmanager.
-
-The reason is simple: monitoring systems exist to observe real workloads. Prometheus needs metrics to scrape, Grafana needs data to visualize, Loki needs logs to search, and Alertmanager needs failure signals to act on.
-
-So the platform is built in this order:
+## Architecture
 
 ```text
-Application
-  ↓
-Supporting services
-  ↓
-Observability
-  ↓
-Alerting
-  ↓
-Automation
-  ↓
-Incident response
-## Current Status
+                    GitHub
+                       │
+             GitHub Actions CI
+                       │
+                       ▼
+                Docker Compose
+                       │
+ ┌─────────────────────┼──────────────────────┐
+ │                     │                      │
+ ▼                     ▼                      ▼
+FastAPI            PostgreSQL              Redis
+ │
+ ├──────────── Metrics ─────────────┐
+ │                                  │
+ ▼                                  ▼
+Prometheus                   Blackbox Exporter
+ │
+ ├──────── Alerts ───────────────► Alertmanager
+ │
+ ▼
+Grafana
+ ▲
+ │
+ ├──────────────┬───────────────┐
+ │              │               │
+ ▼              ▼               ▼
+Loki          Tempo        Prometheus
+ ▲              ▲
+ │              │
+Promtail   OpenTelemetry
+```
 
-Milestone 1: Project skeleton and repository standards.
+## Technology Stack
+
+| Area | Technology |
+|------|------------|
+| API | FastAPI |
+| Database | PostgreSQL |
+| Cache | Redis |
+| Metrics | Prometheus |
+| Dashboards | Grafana |
+| Alerting | Alertmanager |
+| Logging | Loki + Promtail |
+| Tracing | OpenTelemetry + Tempo |
+| Synthetic Monitoring | Blackbox Exporter |
+| Container Monitoring | cAdvisor |
+| Host Monitoring | Node Exporter |
+| Database Monitoring | PostgreSQL Exporter |
+| CI | GitHub Actions |
+| Runtime | Docker Compose |
+
+## Features
+
+- FastAPI application
+- PostgreSQL and Redis
+- Prometheus metrics
+- Recording Rules and Burn Rate alerts
+- Grafana dashboards
+- Alertmanager integration
+- Loki centralized logging
+- OpenTelemetry + Tempo tracing
+- Blackbox synthetic monitoring
+- GitHub Actions CI
+
+## Dashboards
+
+### Database
+- PostgreSQL Availability
+- Active Connections
+- Database Size
+- Transactions/sec
+- Locks
+- Connection Utilization
+
+### Reliability
+- Synthetic Availability
+- Probe Latency
+- HTTP Status Code
+- Error Budget Burn Rate
+- HTTP 5xx Error Rate
+
+### Logs
+- Loki Explore
+
+### Traces
+- Tempo Explore
+
+## Repository Structure
+
+```text
+.
+├── apps/
+├── platform/
+├── docs/
+├── scripts/
+├── automation/
+├── docker-compose.yml
+└── README.md
+```
+
+## CI Pipeline
+
+- Checkout repository
+- Install dependencies
+- Validate Docker Compose
+- Validate Prometheus configuration
+- Build Docker image
+
+## Quick Start
+
+```bash
+git clone https://github.com/emefido/sre-production-platform.git
+cd sre-production-platform
+cp .env.example .env
+docker compose up -d
+```
+
+## Skills Demonstrated
+
+- Site Reliability Engineering
+- Observability
+- Monitoring
+- Alerting
+- Distributed Tracing
+- Synthetic Monitoring
+- CI/CD
+- Docker
+
+## Future Improvements
+
+- Kubernetes deployment
+- Horizontal scaling
+- Production TLS
+
+## License
+
+Educational and portfolio purposes.
