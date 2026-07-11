@@ -1,0 +1,42 @@
+name: SRE Production Platform CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  validate:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install API Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r apps/api-service/requirements.txt
+
+      - name: Validate Docker Compose
+        run: |
+          docker compose config --quiet
+
+      - name: Validate Prometheus Configuration
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}/platform/prometheus:/etc/prometheus:ro \
+            prom/prometheus:v3.5.0 \
+            promtool check config /etc/prometheus/prometheus.yml
+
+      - name: Build API Docker Image
+        run: |
+          docker compose build api-service
