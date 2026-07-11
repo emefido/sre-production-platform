@@ -1,154 +1,211 @@
 # Production-Grade SRE Observability Platform
 
-> A production-style Site Reliability Engineering portfolio demonstrating monitoring, observability, reliability engineering, distributed tracing, synthetic monitoring, and CI/CD.
+![GitHub](https://img.shields.io/github/actions/workflow/status/emefido/sre-production-platform/ci.yml?branch=main)
 
-![Platform](docs/architecture.png)
+> A production-style Site Reliability Engineering portfolio
+> demonstrating monitoring, observability, distributed tracing,
+> synthetic monitoring and CI/CD.
 
----
+------------------------------------------------------------------------
 
-## Executive Summary
+# Executive Summary
 
-This repository demonstrates how to design, build, monitor, operate, and troubleshoot a production-style application platform from scratch.
+This repository demonstrates how a production-style platform can be
+designed, monitored, operated and continuously validated using modern
+Site Reliability Engineering practices.
 
-The focus is operational excellence rather than infrastructure provisioning. Every component was added incrementally and validated to build a complete observability platform suitable for demonstrating Senior Site Reliability Engineering skills.
+The platform focuses on **operations and observability**, building each
+component incrementally and validating it before moving to the next
+stage.
 
-## Architecture
+------------------------------------------------------------------------
 
-```text
+# Architecture
+
+![Architecture](docs/architecture.png)
+
+------------------------------------------------------------------------
+
+# Technology Stack
+
+  Layer                  Technology
+  ---------------------- -----------------------
+  Application            FastAPI
+  Database               PostgreSQL
+  Cache                  Redis
+  Metrics                Prometheus
+  Visualization          Grafana
+  Alerting               Alertmanager
+  Logging                Loki + Promtail
+  Distributed Tracing    Tempo + OpenTelemetry
+  Synthetic Monitoring   Blackbox Exporter
+  Container Metrics      cAdvisor
+  Host Metrics           Node Exporter
+  Database Metrics       PostgreSQL Exporter
+  CI/CD                  GitHub Actions
+  Runtime                Docker Compose
+
+------------------------------------------------------------------------
+
+# Platform Architecture
+
+``` text
                     GitHub
                        │
-             GitHub Actions CI
+              GitHub Actions CI
                        │
                        ▼
-                Docker Compose
+               Docker Compose
                        │
- ┌─────────────────────┼──────────────────────┐
- │                     │                      │
- ▼                     ▼                      ▼
-FastAPI            PostgreSQL              Redis
- │
- ├──────────── Metrics ─────────────┐
- │                                  │
- ▼                                  ▼
-Prometheus                   Blackbox Exporter
- │
- ├──────── Alerts ───────────────► Alertmanager
- │
- ▼
-Grafana
- ▲
- │
- ├──────────────┬───────────────┐
- │              │               │
- ▼              ▼               ▼
-Loki          Tempo        Prometheus
- ▲              ▲
- │              │
-Promtail   OpenTelemetry
+     ┌─────────────────┴─────────────────┐
+     │                                   │
+     ▼                                   ▼
+ FastAPI API                     PostgreSQL
+     │                                   │
+     ├──────────── Metrics ───────────────┐
+     ▼                                   ▼
+ Prometheus                    PostgreSQL Exporter
+     ▲
+     ├── Node Exporter
+     ├── cAdvisor
+     ├── Blackbox Exporter
+     ▼
+ Grafana
+ ▲        ▲
+ │        │
+Loki    Tempo
+ ▲        ▲
+ │        │
+Promtail OpenTelemetry
 ```
 
-## Technology Stack
+------------------------------------------------------------------------
 
-| Area | Technology |
-|------|------------|
-| API | FastAPI |
-| Database | PostgreSQL |
-| Cache | Redis |
-| Metrics | Prometheus |
-| Dashboards | Grafana |
-| Alerting | Alertmanager |
-| Logging | Loki + Promtail |
-| Tracing | OpenTelemetry + Tempo |
-| Synthetic Monitoring | Blackbox Exporter |
-| Container Monitoring | cAdvisor |
-| Host Monitoring | Node Exporter |
-| Database Monitoring | PostgreSQL Exporter |
-| CI | GitHub Actions |
-| Runtime | Docker Compose |
+# Grafana Dashboard
 
-## Features
+The primary operational dashboard provides:
 
-- FastAPI application
-- PostgreSQL and Redis
-- Prometheus metrics
-- Recording Rules and Burn Rate alerts
-- Grafana dashboards
-- Alertmanager integration
-- Loki centralized logging
-- OpenTelemetry + Tempo tracing
-- Blackbox synthetic monitoring
-- GitHub Actions CI
+-   PostgreSQL Availability
+-   Database Size
+-   API Requests Per Second
+-   Deadlocks
+-   Connection Utilization
+-   API p99 Latency
 
-## Dashboards
+![Grafana Dashboard](docs/grafana-dashboard.png)
 
-### Database
-- PostgreSQL Availability
-- Active Connections
-- Database Size
-- Transactions/sec
-- Locks
-- Connection Utilization
+------------------------------------------------------------------------
 
-### Reliability
-- Synthetic Availability
-- Probe Latency
-- HTTP Status Code
-- Error Budget Burn Rate
-- HTTP 5xx Error Rate
+# Prometheus Targets
 
-### Logs
-- Loki Explore
+Prometheus continuously scrapes:
 
-### Traces
-- Tempo Explore
+-   FastAPI
+-   PostgreSQL Exporter
+-   Node Exporter
+-   cAdvisor
+-   Blackbox Exporter
 
-## Repository Structure
+![Prometheus Targets](docs/prometheus-targets.png)
 
-```text
+------------------------------------------------------------------------
+
+# Centralized Logging
+
+Application logs are collected with Promtail and stored in Loki.
+
+Engineers can:
+
+-   Search logs
+-   Filter by container
+-   Investigate incidents
+-   Correlate logs with metrics and traces
+
+![Loki Explore](docs/loki-explore.png)
+
+------------------------------------------------------------------------
+
+# Distributed Tracing
+
+Tracing is implemented with:
+
+-   OpenTelemetry
+-   OTLP
+-   Tempo
+
+Current traces include API requests such as `/health` and `/metrics`.
+
+![Tempo Traces](docs/tempo-traces.png)
+
+------------------------------------------------------------------------
+
+# Continuous Integration
+
+GitHub Actions validates every push by:
+
+-   Validating Docker Compose
+-   Validating Prometheus configuration
+-   Building the application image
+
+![GitHub Actions](docs/github-actions.png)
+
+------------------------------------------------------------------------
+
+# Repository Structure
+
+``` text
 .
+├── .github/
 ├── apps/
-├── platform/
-├── docs/
-├── scripts/
 ├── automation/
+├── docs/
+├── platform/
+├── scripts/
 ├── docker-compose.yml
 └── README.md
 ```
 
-## CI Pipeline
+------------------------------------------------------------------------
 
-- Checkout repository
-- Install dependencies
-- Validate Docker Compose
-- Validate Prometheus configuration
-- Build Docker image
+# Quick Start
 
-## Quick Start
-
-```bash
+``` bash
 git clone https://github.com/emefido/sre-production-platform.git
 cd sre-production-platform
-cp .env.example .env
 docker compose up -d
 ```
 
-## Skills Demonstrated
+------------------------------------------------------------------------
 
-- Site Reliability Engineering
-- Observability
-- Monitoring
-- Alerting
-- Distributed Tracing
-- Synthetic Monitoring
-- CI/CD
-- Docker
+# Skills Demonstrated
 
-## Future Improvements
+-   Site Reliability Engineering
+-   Observability
+-   Monitoring
+-   Alerting
+-   Distributed Tracing
+-   Centralized Logging
+-   Synthetic Monitoring
+-   Docker
+-   GitHub Actions
+-   CI/CD
+-   PostgreSQL Monitoring
+-   Reliability Engineering
 
-- Kubernetes deployment
-- Horizontal scaling
-- Production TLS
+------------------------------------------------------------------------
 
-## License
+# Roadmap
+
+-   Kubernetes
+-   Helm
+-   Argo CD
+-   Chaos Engineering
+-   SLO/Error Budget reporting
+-   Load testing
+-   Terraform deployment
+
+------------------------------------------------------------------------
+
+# License
 
 Educational and portfolio purposes.
