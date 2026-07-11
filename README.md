@@ -92,7 +92,7 @@ The primary operational dashboard provides:
 -   Connection Utilization
 -   API p99 Latency
 
-![Grafana Dashboard](docs/grafana-dashboard.png)
+![Grafana Dashboard](docs/grafana-home.png)
 
 ------------------------------------------------------------------------
 
