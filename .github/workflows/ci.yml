@@ -30,12 +30,11 @@ jobs:
 
       - name: Validate Prometheus Configuration
         run: |
-          docker pull prom/prometheus:v3.5.0
-          docker create --name promtool prom/prometheus:v3.5.0
-          docker cp promtool:/bin/promtool ./promtool
-          chmod +x ./promtool
-          docker rm promtool
-          ./promtool check config platform/prometheus/prometheus.yml
+          docker run --rm \
+            -v ${{ github.workspace }}/platform/prometheus:/etc/prometheus \
+            --entrypoint promtool \
+            prom/prometheus:v3.5.0 \
+            check config /etc/prometheus/prometheus.yml
       - name: Build API Docker Image
         run: |
           docker compose build api-service
